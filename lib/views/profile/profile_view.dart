@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:todos_bloc_app/services/auth/auth_service.dart';
-import 'package:todos_bloc_app/services/auth/user_profile_bloc/user.dart';
+import 'package:todos_bloc_app/services/cloud/user.dart';
 import 'package:todos_bloc_app/services/cloud/firebase_cloud_user_details.dart';
 import 'package:todos_bloc_app/utilities/dialogs/generic_dialog.dart';
 import 'package:todos_bloc_app/views/profile/user_profile_textfield.dart';
@@ -64,26 +64,26 @@ class _ProfileViewState extends State<ProfileView> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
-              onPressed: () async {
-                if (_isEditMode) {
-                  await _userService.updateUser(
-                    userId: userId,
-                    city: _cityController.text,
-                    state: _stateController.text,
-                    pincode: _pincodeController.text,
-                    linkedInUrl: _linkedInController.text,
-                  );
-                }
-                setState(() {
-                  _isEditMode = !_isEditMode;
-                });
-              },
-              child: Text(_isEditMode ? "Save" : "Edit")),
+            onPressed: () async {
+              if (_isEditMode) {
+                await _userService.updateUser(
+                  userId: userId,
+                  city: _cityController.text,
+                  state: _stateController.text,
+                  pincode: _pincodeController.text,
+                  linkedInUrl: _linkedInController.text,
+                );
+              }
+              setState(() {
+                _isEditMode = !_isEditMode;
+              });
+            },
+            child: Text(_isEditMode ? "Save" : "Edit"),
+          ),
         ),
         body: StreamBuilder(
             stream: _userService.allUserDetails(userId: userId),
             builder: (context, snapshot) {
-              print("state:: ${snapshot.connectionState}");
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                 case ConnectionState.active:
@@ -92,10 +92,8 @@ class _ProfileViewState extends State<ProfileView> {
                   _stateController.text = snapshot.data?.state ?? 'city';
                   _linkedInController.text =
                       snapshot.data?.linkedInLink ?? 'city';
-                  print(
-                      "snap::: ${snapshot.data.toString()}\n ${_cityController.text.length}");
+
                   if (snapshot.hasData) {
-                    print("snap::: ${snapshot.data.toString()}");
                     final userDetails = snapshot.data as User;
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -253,11 +251,9 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     );
                   } else {
-                    print("${snapshot.error}");
                     return const Center(child: CircularProgressIndicator());
                   }
                 default:
-                  print("${snapshot.error}");
                   return const Center(child: CircularProgressIndicator());
               }
             }),

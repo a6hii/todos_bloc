@@ -43,22 +43,22 @@ class _RegisterViewState extends State<RegisterView> {
           if (state.exception is WeakPasswordAuthException) {
             await showErrorDialog(
               context,
-              'context.loc.register_error_weak_password',
+              'This password is not secure enough. Please choose another password!',
             );
           } else if (state.exception is EmailAlreadyInUseAuthException) {
             await showErrorDialog(
               context,
-              'context.loc.register_error_email_already_in_use',
+              'This email is already registered to another user. Please choose another email!',
             );
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
               context,
-              'context.loc.register_error_generic',
+              'Failed to register. Please try again later!',
             );
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(
               context,
-              'context.loc.register_error_invalid_email',
+              'The email address you entered appears to be invalid. Please try another email address!',
             );
           }
         }
@@ -74,7 +74,7 @@ class _RegisterViewState extends State<RegisterView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'context.loc.register_view_prompt',
+                  'New user? Please register to continue!',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 Padding(
@@ -86,7 +86,6 @@ class _RegisterViewState extends State<RegisterView> {
                     autofocus: true,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
-                      // hintText: context.loc.email_text_field_placeholder,
                       label: Text('Your name'),
                       border: OutlineInputBorder(),
                     ),
@@ -103,8 +102,7 @@ class _RegisterViewState extends State<RegisterView> {
                     autofocus: true,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      // hintText: context.loc.email_text_field_placeholder,
-                      label: Text('context.loc.email_text_field_placeholder'),
+                      label: Text('Email'),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -117,9 +115,7 @@ class _RegisterViewState extends State<RegisterView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: const InputDecoration(
-                      // hintText: context.loc.password_text_field_placeholder,
-                      label:
-                          Text('context.loc.password_text_field_placeholder'),
+                      label: Text('Password'),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -135,7 +131,7 @@ class _RegisterViewState extends State<RegisterView> {
                           final email = _email.text;
                           final password = _password.text;
                           final username = _name.text;
-                          print("object");
+
                           context.read<AuthBloc>().add(
                                 AuthEventRegister(
                                   username,
@@ -156,7 +152,7 @@ class _RegisterViewState extends State<RegisterView> {
                               );
                         },
                         child: const Text(
-                          ' context.loc.register_view_already_registered',
+                          'Already registered? Login here!',
                         ),
                       ),
                     ],

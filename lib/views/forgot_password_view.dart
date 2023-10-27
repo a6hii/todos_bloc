@@ -38,29 +38,28 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             _controller.clear();
             await showPasswordResetSentDialog(context);
           }
-          if (state.exception != null) {
+          if (state.exception != null && context.mounted) {
             await showErrorDialog(
               context,
-              'context.loc.forgot_password_view_generic_error',
+              'We could not process your request. Please make sure that you are a registered user, or if not, register a user now by going back one step.',
             );
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('context.loc.forgot_password'),
+          title: const Text('Password Reset'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 24),
                   child: Text(
-                    'context.loc.forgot_password_view_prompt',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
+                    'If you forgot your password, simply enter your email and we will send you a password reset link.',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
                 TextField(
@@ -68,13 +67,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   autocorrect: false,
                   autofocus: true,
                   controller: _controller,
-                  // decoration: InputDecoration(
-                  //   hintText: 'context.loc.email_text_field_placeholder',
-                  // ),
-                  decoration: InputDecoration(
-                    // hintText: context.loc.password_text_field_placeholder,
-                    label: Text('context.loc.email_text_field_placeholder'),
-                    border: const OutlineInputBorder(),
+                  decoration: const InputDecoration(
+                    label: Text('Enter your email'),
+                    border: OutlineInputBorder(),
                   ),
                 ),
                 Padding(
@@ -89,8 +84,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           .read<AuthBloc>()
                           .add(AuthEventForgotPassword(email: email));
                     },
-                    child: Text(
-                      'context.loc.forgot_password_view_send_me_link',
+                    child: const Text(
+                      'Send me password reset link',
                     ),
                   ),
                 ),
@@ -100,8 +95,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           const AuthEventLogOut(),
                         );
                   },
-                  child: Text(
-                    'context.loc.forgot_password_view_back_to_login',
+                  child: const Text(
+                    'Back to login page',
                   ),
                 ),
               ],

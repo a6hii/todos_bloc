@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:todos_bloc_app/services/auth/user_profile_bloc/user.dart';
+import 'package:todos_bloc_app/services/cloud/user.dart';
 import 'package:todos_bloc_app/services/cloud/cloud_storage_exceptions.dart';
 import 'package:dartx/dartx.dart';
 
@@ -65,11 +65,7 @@ class FirebaseCloudStorageUserDetails {
         final TaskSnapshot taskSnapshot = await uploadTask;
         final imageUrl = await taskSnapshot.ref.getDownloadURL();
         print("url is $imageUrl");
-        // Update the user's profilePicUrl in Firestore
-        // await FirebaseFirestore.instance
-        //     .collection('user')
-        //     .doc(uid)
-        //     .update({'profilePicUrl': imageUrl});
+
         try {
           await updateUser(
             userId: userId,

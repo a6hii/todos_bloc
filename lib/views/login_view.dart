@@ -40,22 +40,21 @@ class _LoginViewState extends State<LoginView> {
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
               context,
-              ' context.loc.login_error_cannot_find_user',
+              'Cannot find a user with the entered credentials!',
             );
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialog(
-                context, ' context.loc.login_error_wrong_credentials,');
+            await showErrorDialog(context, 'Wrong Credentials,');
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
               context,
-              ' context.loc.login_error_auth_error',
+              'Authentication error',
             );
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Welcome "),
+          title: const Text("Welcome "),
         ),
         body: Padding(
           padding: const EdgeInsets.all(
@@ -65,10 +64,8 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               children: [
                 const Text(
-                  // context.loc.login_view_prompt
                   "Please login to continue",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 24),
@@ -77,10 +74,10 @@ class _LoginViewState extends State<LoginView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       // hintText: context.loc.email_text_field_placeholder,
-                      label: Text('context.loc.email_text_field_placeholder'),
-                      border: const OutlineInputBorder(),
+                      label: Text('Email'),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -91,11 +88,9 @@ class _LoginViewState extends State<LoginView> {
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      // hintText: context.loc.password_text_field_placeholder,
-                      label:
-                          Text('context.loc.password_text_field_placeholder'),
-                      border: const OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      label: Text('Password'),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -107,17 +102,17 @@ class _LoginViewState extends State<LoginView> {
                             const AuthEventForgotPassword(),
                           );
                     },
-                    child: Text(
-                        // context.loc.login_view_forgot_password,
-                        'Reset Password'),
+                    child: const Text('Reset Password'),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                        fixedSize: MaterialStatePropertyAll(
-                            Size(MediaQuery.sizeOf(context).width, 54))),
+                      fixedSize: MaterialStatePropertyAll(
+                        Size(MediaQuery.sizeOf(context).width, 54),
+                      ),
+                    ),
                     onPressed: () async {
                       final email = _email.text;
                       final password = _password.text;
@@ -128,9 +123,9 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           );
                     },
-                    child: Text(
-                      'context.loc.login',
-                      style: const TextStyle(fontSize: 16),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
@@ -145,9 +140,9 @@ class _LoginViewState extends State<LoginView> {
                             const AuthEventShouldRegister(),
                           );
                     },
-                    child: Text(
-                      'context.loc.login_view_not_registered_yet',
-                      style: const TextStyle(fontSize: 16),
+                    child: const Text(
+                      'New user? Register here!',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                 )

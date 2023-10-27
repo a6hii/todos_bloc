@@ -6,23 +6,23 @@ import 'package:todos_bloc_app/services/cloud/cloud_storage_exceptions.dart';
 enum TodoStatus { todo, done }
 
 class FirebaseCloudStorage {
-  final notes = FirebaseFirestore.instance.collection('todos');
+  final todos = FirebaseFirestore.instance.collection('todos');
 
-  Future<void> deleteNote({required String documentId}) async {
+  Future<void> deleteTodo({required String documentId}) async {
     try {
-      await notes.doc(documentId).delete();
+      await todos.doc(documentId).delete();
     } catch (e) {
       throw CouldNotDeleteTodoException();
     }
   }
 
-  Future<void> updateNote({
+  Future<void> updatetodo({
     required String documentId,
     String? text,
     String? status,
   }) async {
     try {
-      await notes.doc(documentId).update({
+      await todos.doc(documentId).update({
         if (text != null) todo: text,
         if (status != null) 'status': status,
         updatedAt: Timestamp.now(),
@@ -37,7 +37,7 @@ class FirebaseCloudStorage {
     required TodoStatus status,
   }) async {
     try {
-      await notes.doc(documentId).update({
+      await todos.doc(documentId).update({
         status: status.toString(),
         updatedAt: Timestamp.now(),
       });
@@ -46,25 +46,25 @@ class FirebaseCloudStorage {
     }
   }
 
-  Stream<Iterable<Todo>> allNotes({required String ownerUserId}) {
-    final allNotes = notes
+  Stream<Iterable<Todo>> allTodos({required String ownerUserId}) {
+    final allTodos = todos
         .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
         .snapshots()
         .map((event) => event.docs.map((doc) => Todo.fromSnapshot(doc)));
-    return allNotes;
+    return allTodos;
   }
 
-  Future<Todo> createNewNote({required String ownerUserId}) async {
-    final document = await notes.add({
+  Future<Todo> createNewTodo({required String ownerUserId}) async {
+    final document = await todos.add({
       ownerUserIdFieldName: ownerUserId,
       todo: '',
       todoStatus: TodoStatus.todo.name.toString(),
       todoCreatedAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });
-    final fetchedNote = await document.get();
+    final fetchedTodo = await document.get();
     return Todo(
-      documentId: fetchedNote.id,
+      documentId: fetchedTodo.id,
       ownerUserId: ownerUserId,
       todoText: '',
       status: TodoStatus.todo.name.toString(),

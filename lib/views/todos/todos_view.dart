@@ -8,7 +8,7 @@ import 'package:todos_bloc_app/services/auth/auth_bloc/auth_event.dart';
 import 'package:todos_bloc_app/services/cloud/todo.dart';
 import 'package:todos_bloc_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:todos_bloc_app/utilities/dialogs/logout_dialog.dart';
-import 'package:todos_bloc_app/views/notes/notes_list_view.dart';
+import 'package:todos_bloc_app/views/todos/todos_list_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 
 extension Count<T extends Iterable> on Stream<T> {
@@ -22,23 +22,25 @@ class SingleTickerProvider implements TickerProvider {
   }
 }
 
-class NotesView extends StatefulWidget {
+class TodosView extends StatefulWidget {
   // final AuthUser authuser;
-  const NotesView({super.key});
+  const TodosView({super.key});
 
   @override
-  _NotesViewState createState() => _NotesViewState();
+  _TodosViewState createState() => _TodosViewState();
 }
 
-class _NotesViewState extends State<NotesView> {
-  late final FirebaseCloudStorage _notesService;
+class _TodosViewState extends State<TodosView> {
+  late final FirebaseCloudStorage _todosService;
   String get userId => AuthService.firebase().currentUser!.id;
-  final _tabController =
-      TabController(length: 2, vsync: SingleTickerProvider());
+  final _tabController = TabController(
+    length: 2,
+    vsync: SingleTickerProvider(),
+  );
 
   @override
   void initState() {
-    _notesService = FirebaseCloudStorage();
+    _todosService = FirebaseCloudStorage();
     _tabController.addListener(() {});
     super.initState();
   }
@@ -53,11 +55,11 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hi"),
+        title: const Text("Hi"),
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+              Navigator.of(context).pushNamed(createOrUpdateTodoRoute);
             },
             icon: const Icon(Icons.add),
           ),
@@ -90,38 +92,41 @@ class _NotesViewState extends State<NotesView> {
             },
           ),
         ],
-        bottom: TabBar(controller: _tabController, tabs: [
-          Tab(
-            text: 'Todos',
-          ),
-          Tab(
-            text: 'Done',
-          )
-        ]),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              text: 'Todos',
+            ),
+            Tab(
+              text: 'Done',
+            )
+          ],
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           StreamBuilder(
-            stream: _notesService.allNotes(ownerUserId: userId),
+            stream: _todosService.allTodos(ownerUserId: userId),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                 case ConnectionState.active:
                   if (snapshot.hasData) {
-                    final allNotes = snapshot.data as Iterable<Todo>;
+                    final allTodos = snapshot.data as Iterable<Todo>;
 
-                    return NotesListView(
-                      notes: allNotes.where((element) =>
+                    return TodosListView(
+                      todos: allTodos.where((element) =>
                           element.status == TodoStatus.todo.name.toString()),
-                      onDeleteNote: (note) async {
-                        await _notesService.deleteNote(
-                            documentId: note.documentId);
+                      onDeleteNote: (todo) async {
+                        await _todosService.deleteTodo(
+                            documentId: todo.documentId);
                       },
-                      onTap: (note) {
+                      onTap: (todo) {
                         Navigator.of(context).pushNamed(
-                          createOrUpdateNoteRoute,
-                          arguments: note,
+                          createOrUpdateTodoRoute,
+                          arguments: todo,
                         );
                       },
                     );
@@ -135,25 +140,25 @@ class _NotesViewState extends State<NotesView> {
           ),
           //Done todos:
           StreamBuilder(
-            stream: _notesService.allNotes(ownerUserId: userId),
+            stream: _todosService.allTodos(ownerUserId: userId),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                 case ConnectionState.active:
                   if (snapshot.hasData) {
-                    final allNotes = snapshot.data as Iterable<Todo>;
+                    final allTodos = snapshot.data as Iterable<Todo>;
 
-                    return NotesListView(
-                      notes: allNotes.where((element) =>
+                    return TodosListView(
+                      todos: allTodos.where((element) =>
                           element.status == TodoStatus.done.name.toString()),
-                      onDeleteNote: (note) async {
-                        await _notesService.deleteNote(
-                            documentId: note.documentId);
+                      onDeleteNote: (todo) async {
+                        await _todosService.deleteTodo(
+                            documentId: todo.documentId);
                       },
-                      onTap: (note) {
+                      onTap: (todo) {
                         Navigator.of(context).pushNamed(
-                          createOrUpdateNoteRoute,
-                          arguments: note,
+                          createOrUpdateTodoRoute,
+                          arguments: todo,
                         );
                       },
                     );

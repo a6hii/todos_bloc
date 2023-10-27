@@ -13,24 +13,24 @@ class CreateUpdateTodoView extends StatefulWidget {
 
 class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
   Todo? _todo;
-  late final FirebaseCloudStorage _notesService;
+  late final FirebaseCloudStorage _todosService;
   late final TextEditingController _textController;
 
   @override
   void initState() {
-    _notesService = FirebaseCloudStorage();
+    _todosService = FirebaseCloudStorage();
     _textController = TextEditingController();
     super.initState();
   }
 
   void _textControllerListener() async {
-    final note = _todo;
-    if (note == null) {
+    final todo = _todo;
+    if (todo == null) {
       return;
     }
     final text = _textController.text;
-    await _notesService.updateNote(
-      documentId: note.documentId,
+    await _todosService.updatetodo(
+      documentId: todo.documentId,
       text: text,
     );
   }
@@ -55,7 +55,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
     }
     final currentUser = AuthService.firebase().currentUser!;
     final userId = currentUser.id;
-    final newNote = await _notesService.createNewNote(ownerUserId: userId);
+    final newNote = await _todosService.createNewTodo(ownerUserId: userId);
     _todo = newNote;
     return newNote;
   }
@@ -63,7 +63,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
   Future<void> _deleteNoteIfTextIsEmpty() async {
     final note = _todo;
     if (_textController.text.isEmpty && note != null) {
-      await _notesService.deleteNote(documentId: note.documentId);
+      await _todosService.deleteTodo(documentId: note.documentId);
     }
   }
 
@@ -71,7 +71,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
     final note = _todo;
     final text = _textController.text;
     if (note != null && text.isNotEmpty) {
-      await _notesService.updateNote(
+      await _todosService.updatetodo(
         documentId: note.documentId,
         text: text,
       );
@@ -149,7 +149,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
                                 if (_todo != null) {
                                   if (_todo?.status !=
                                       TodoStatus.done.name.toString()) {
-                                    await _notesService.updateNote(
+                                    await _todosService.updatetodo(
                                       documentId: _todo!.documentId,
                                       status: TodoStatus.done.name.toString(),
                                     );

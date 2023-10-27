@@ -1,2 +1,2 @@
-const createOrUpdateNoteRoute = '/notes/new-note/';
+const createOrUpdateTodoRoute = '/todos/new-todo/';
 const profileViewRoute = '/profile-view/';

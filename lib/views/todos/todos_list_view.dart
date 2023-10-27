@@ -3,27 +3,27 @@ import 'package:todos_bloc_app/constants/routes.dart';
 import 'package:todos_bloc_app/services/cloud/todo.dart';
 import 'package:todos_bloc_app/utilities/dialogs/delete_dialog.dart';
 
-typedef NoteCallback = void Function(Todo note);
+typedef TodoCallback = void Function(Todo todo);
 
-class NotesListView extends StatelessWidget {
-  final Iterable<Todo> notes;
-  final NoteCallback onDeleteNote;
-  final NoteCallback onTap;
+class TodosListView extends StatelessWidget {
+  final Iterable<Todo> todos;
+  final TodoCallback onDeleteNote;
+  final TodoCallback onTap;
 
-  const NotesListView({
+  const TodosListView({
     Key? key,
-    required this.notes,
+    required this.todos,
     required this.onDeleteNote,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return notes.isEmpty
+    return todos.isEmpty
         ? Center(
             child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+                  Navigator.of(context).pushNamed(createOrUpdateTodoRoute);
                 },
                 child: const Text(
                   "Create a todo!",
@@ -33,15 +33,15 @@ class NotesListView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 )))
         : ListView.builder(
-            itemCount: notes.length,
+            itemCount: todos.length,
             itemBuilder: (context, index) {
-              final note = notes.elementAt(index);
+              final todo = todos.elementAt(index);
               return ListTile(
                 onTap: () {
-                  onTap(note);
+                  onTap(todo);
                 },
                 title: Text(
-                  note.todoText,
+                  todo.todoText,
                   maxLines: 1,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
@@ -50,7 +50,7 @@ class NotesListView extends StatelessWidget {
                   onPressed: () async {
                     final shouldDelete = await showDeleteDialog(context);
                     if (shouldDelete) {
-                      onDeleteNote(note);
+                      onDeleteNote(todo);
                     }
                   },
                   icon: const Icon(Icons.delete),
