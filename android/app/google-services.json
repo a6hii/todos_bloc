@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "785126095746",
+    "project_id": "todos-bloc-app",
+    "storage_bucket": "todos-bloc-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785126095746:android:e2c52337369901e44d2d9b",
+        "android_client_info": {
+          "package_name": "com.example.todos_bloc_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOyaLsIF3nRkYuicglu_7Fvyc-45ozmWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
