@@ -8,10 +8,10 @@ Future<void> showErrorDialog(
 ) {
   return showGenericDialog<void>(
     context: context,
-    title: 'context.loc.generic_error_prompt',
+    title: 'An error occurred',
     content: text,
     optionsBuilder: () => {
-      'context.loc.ok': null,
+      'Ok': null,
     },
   );
 }

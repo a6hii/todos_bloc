@@ -5,11 +5,11 @@ import 'package:todos_bloc_app/utilities/dialogs/generic_dialog.dart';
 Future<bool> showDeleteDialog(BuildContext context) {
   return showGenericDialog<bool>(
     context: context,
-    title: 'context.loc.delete',
-    content: 'context.loc.delete_note_prompt,',
+    title: 'Delete',
+    content: 'cAre you sure you want to delete this note?',
     optionsBuilder: () => {
-      'ontext.loc.cancel': false,
-      'context.loc.yes': true,
+      'Cancel': false,
+      'Yes': true,
     },
   ).then(
     (value) => value ?? false,
