@@ -60,6 +60,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: Text(
                     'If you forgot your password, simply enter your email and we will send you a password reset link.',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 TextField(

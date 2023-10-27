@@ -15,6 +15,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
   Todo? _todo;
   late final FirebaseCloudStorage _todosService;
   late final TextEditingController _textController;
+  bool _isTodo = true;
 
   @override
   void initState() {
@@ -46,16 +47,32 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
     if (widgetNote != null) {
       _todo = widgetNote;
       _textController.text = widgetNote.todoText;
+
+      if (_todo?.status == TodoStatus.done.name.toString()) {
+        setState(() {
+          _isTodo = false;
+        });
+      }
       return widgetNote;
     }
 
     final existingNote = _todo;
     if (existingNote != null) {
+      if (_todo?.status == TodoStatus.done.name.toString()) {
+        setState(() {
+          _isTodo = false;
+        });
+      }
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
     final userId = currentUser.id;
     final newNote = await _todosService.createNewTodo(ownerUserId: userId);
+    if (_todo?.status == TodoStatus.done.name.toString()) {
+      setState(() {
+        _isTodo = false;
+      });
+    }
     _todo = newNote;
     return newNote;
   }
@@ -95,13 +112,6 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Text(
-            _todo?.status == TodoStatus.todo.name.toString()
-                ? 'Create a todo'
-                : 'Completed',
-          ),
-        ),
         body: Column(
           children: [
             FutureBuilder(
@@ -110,19 +120,29 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.done:
                     _setupTextControllerListener();
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: TextField(
-                        controller: _textController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 10,
-                        maxLength: 1000,
-                        enabled:
-                            _todo?.status == TodoStatus.todo.name.toString(),
-                        decoration: const InputDecoration(
-                            hintText: 'Start typing...',
-                            border: OutlineInputBorder()),
-                      ),
+
+                    return Column(
+                      children: [
+                        AppBar(
+                          title: Text(
+                            _isTodo ? 'Create a todo' : 'Completed',
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: TextField(
+                            controller: _textController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 10,
+                            maxLength: 1000,
+                            enabled: _todo?.status ==
+                                TodoStatus.todo.name.toString(),
+                            decoration: const InputDecoration(
+                                hintText: 'Start typing...',
+                                border: OutlineInputBorder()),
+                          ),
+                        ),
+                      ],
                     );
                   default:
                     return const Expanded(
@@ -138,7 +158,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (_todo?.status == TodoStatus.todo.name.toString())
+                      if (_isTodo)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: OutlinedButton(
@@ -147,8 +167,7 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
                                       MediaQuery.sizeOf(context).width, 54))),
                               onPressed: () async {
                                 if (_todo != null) {
-                                  if (_todo?.status !=
-                                      TodoStatus.done.name.toString()) {
+                                  if (_isTodo) {
                                     await _todosService.updatetodo(
                                       documentId: _todo!.documentId,
                                       status: TodoStatus.done.name.toString(),
@@ -175,10 +194,8 @@ class _CreateUpdateTodoViewState extends State<CreateUpdateTodoView> {
                             if (context.mounted) Navigator.of(context).pop();
                           },
                           child: Text(
-                            _todo?.status == TodoStatus.todo.name.toString()
-                                ? 'Save'
-                                : 'Go back',
-                            style: TextStyle(fontSize: 16),
+                            _isTodo ? 'Save' : 'Go back',
+                            style: const TextStyle(fontSize: 16),
                           )),
                     ],
                   ),
